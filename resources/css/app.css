@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@layer utilities {
+	.marquee {
+		overflow: hidden;
+	}
+
+	.marquee-track {
+		display: flex;
+		width: max-content;
+		animation: marquee 28s linear infinite;
+		will-change: transform;
+	}
+
+	.marquee-scroll {
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-behavior: auto;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+		cursor: grab;
+		touch-action: pan-y;
+	}
+
+	.marquee-scroll * {
+		touch-action: pan-y;
+	}
+
+	.marquee-scroll::-webkit-scrollbar {
+		display: none;
+	}
+
+	.marquee-scroll.is-dragging {
+		cursor: grabbing;
+	}
+
+	.marquee-track-scroll {
+		display: flex;
+		width: max-content;
+	}
+}
