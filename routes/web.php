@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\LogicRushController;
+use App\Http\Controllers\MemoryRushController;
+use App\Http\Controllers\MiniSudokuController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\WordLadderController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
@@ -59,8 +63,20 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('games')->name('games.')->group(function () {
     Route::get('/', [GameController::class, 'index'])->name('index');
     Route::get('/{game}/math-sprint/start', [GameController::class, 'startMathSprint'])->name('math_sprint.start');
-    Route::get('/{game}', [GameController::class, 'play'])->name('play');
+    Route::get('/logic', [LogicRushController::class, 'show'])->name('logic.show');
+    Route::post('/logic/finish', [LogicRushController::class, 'finish'])->name('logic.finish');
+
+    Route::get('/memory', [MemoryRushController::class, 'show'])->name('memory.show');
+    Route::post('/memory/finish', [MemoryRushController::class, 'finish'])->name('memory.finish');
+
+    Route::get('/word-ladder', [WordLadderController::class, 'show'])->name('word_ladder.show');
+    Route::post('/word-ladder/finish', [WordLadderController::class, 'finish'])->name('word_ladder.finish');
+
+    Route::get('/mini-sudoku', [MiniSudokuController::class, 'show'])->name('mini_sudoku.show');
+    Route::post('/mini-sudoku/finish', [MiniSudokuController::class, 'finish'])->name('mini_sudoku.finish');
+
     Route::post('/submit', [GameController::class, 'submit'])->name('submit');
+    Route::get('/{game}', [GameController::class, 'play'])->name('play');
 });
 
 require __DIR__.'/auth.php';
