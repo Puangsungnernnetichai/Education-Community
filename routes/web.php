@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AdvisorController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LogicRushController;
 use App\Http\Controllers\MemoryRushController;
@@ -29,6 +30,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/advisor', [AdvisorController::class, 'index'])->name('advisor.index');
+    Route::post('/advisor/message', [AdvisorController::class, 'message'])->name('advisor.message');
+});
 
 Route::get('/tags/{slug}', [TagController::class, 'show'])->name('tags.show');
 Route::get('/topics/{slug}', [TagController::class, 'show'])->name('topics.show');

@@ -31,4 +31,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'ai_advisor' => [
+        // Supported: 'mock', 'openai'
+        'provider' => env('AI_ADVISOR_PROVIDER', 'mock'),
+
+        'openai' => [
+            'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+            'api_key' => env('OPENAI_API_KEY'),
+            'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
+        ],
+    ],
+
 ];
