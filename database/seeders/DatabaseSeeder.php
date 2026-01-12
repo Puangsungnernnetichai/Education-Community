@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(GameSeeder::class);
+
         User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [

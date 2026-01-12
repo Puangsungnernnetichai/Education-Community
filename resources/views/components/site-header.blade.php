@@ -19,6 +19,9 @@
             <a class="transition hover:text-slate-900 dark:hover:text-white" href="{{ route('home') }}#topics">Topics</a>
             <a class="transition hover:text-slate-900 dark:hover:text-white" href="{{ route('home') }}#about">About</a>
 
+            <a class="transition hover:text-slate-900 dark:hover:text-white" href="{{ route('games.index') }}">Games</a>
+            <a class="transition hover:text-slate-900 dark:hover:text-white" href="{{ route('leaderboard.index') }}">Leaderboard</a>
+
             <div class="ml-2 flex items-center">
                 <label class="inline-flex cursor-pointer items-center" for="dark-toggle">
                     <span class="mr-2 hidden text-xs font-medium text-slate-700 dark:text-slate-200 sm:inline">Dark mode</span>

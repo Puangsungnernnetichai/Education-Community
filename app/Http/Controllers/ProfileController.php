@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameSession;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,8 +17,20 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $stats = GameSession::query()
+            ->where('user_id', $request->user()->id)
+            ->selectRaw('COUNT(*) as total_played')
+            ->selectRaw('COALESCE(MAX(score), 0) as highest_score')
+            ->selectRaw('COALESCE(AVG(score), 0) as average_score')
+            ->first();
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'gameStats' => [
+                'total_played' => (int) ($stats->total_played ?? 0),
+                'highest_score' => (int) ($stats->highest_score ?? 0),
+                'average_score' => (float) ($stats->average_score ?? 0),
+            ],
         ]);
     }
 

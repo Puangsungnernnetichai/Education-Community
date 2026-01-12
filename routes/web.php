@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
 Route::get('/tags/{slug}', [TagController::class, 'show'])->name('tags.show');
 Route::get('/topics/{slug}', [TagController::class, 'show'])->name('topics.show');
@@ -50,6 +54,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth')->prefix('games')->name('games.')->group(function () {
+    Route::get('/', [GameController::class, 'index'])->name('index');
+    Route::get('/{game}/math-sprint/start', [GameController::class, 'startMathSprint'])->name('math_sprint.start');
+    Route::get('/{game}', [GameController::class, 'play'])->name('play');
+    Route::post('/submit', [GameController::class, 'submit'])->name('submit');
 });
 
 require __DIR__.'/auth.php';
