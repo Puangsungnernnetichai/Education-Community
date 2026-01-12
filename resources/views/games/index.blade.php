@@ -6,6 +6,10 @@
     $difficulty = function ($type) {
         return match ($type) {
             'math_sprint' => ['label' => 'Medium', 'classes' => 'bg-indigo-600 text-white'],
+            'game_word_ladder' => ['label' => 'Medium', 'classes' => 'bg-indigo-600 text-white'],
+            'game_sudoku4' => ['label' => 'Medium', 'classes' => 'bg-indigo-600 text-white'],
+            'game_memory' => ['label' => 'Easy', 'classes' => 'bg-emerald-600 text-white'],
+            'game_logic' => ['label' => 'Hard', 'classes' => 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'],
             'arcade' => ['label' => 'Hard', 'classes' => 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'],
             'casual' => ['label' => 'Easy', 'classes' => 'bg-emerald-600 text-white'],
             default => ['label' => 'Easy', 'classes' => 'bg-slate-700 text-white'],
@@ -14,6 +18,10 @@
     $description = function ($type) {
         return match ($type) {
             'math_sprint' => 'Solve as many questions as you can in 60 seconds. Fast, focused practice.',
+            'game_logic' => 'Answer fast under pressure. One mistake (or timeout) ends the run.',
+            'game_memory' => 'Watch the pattern, then repeat it. Builds focus and recall.',
+            'game_word_ladder' => 'Transform a word to the target by changing one letter each step.',
+            'game_sudoku4' => 'Fill a 4x4 mini-sudoku fast: rows, columns, and 2x2 blocks.',
             'arcade' => 'High-energy challenges designed to build speed and confidence.',
             'casual' => 'Quick, low-pressure mini challenges. Great for warm-ups.',
             default => 'Practice, play, and earn points.',

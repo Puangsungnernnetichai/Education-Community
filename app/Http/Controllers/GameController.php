@@ -27,6 +27,22 @@ class GameController extends Controller
             abort(404);
         }
 
+        if ($game->type === 'game_logic') {
+            return view('games.logic');
+        }
+
+        if ($game->type === 'game_memory') {
+            return view('games.memory');
+        }
+
+        if ($game->type === 'game_word_ladder') {
+            return view('games.word-ladder');
+        }
+
+        if ($game->type === 'game_sudoku4') {
+            return view('games.mini-sudoku');
+        }
+
         if ($game->type === 'math_sprint') {
             $nonce = (string) Str::uuid();
             $questions = app(MathSprintService::class)->generateQuestions(50);
@@ -114,7 +130,7 @@ class GameController extends Controller
             return $session;
         });
 
-        return redirect()->route('games.play', $session->game_id)->with('success', 'Score saved!');
+        return redirect()->route('games.play', $game)->with('success', 'Score saved!');
     }
 
     private function submitMathSprint(Request $request, Game $game)
@@ -245,7 +261,7 @@ class GameController extends Controller
             ]);
         }
 
-        return redirect()->route('games.play', $session->game_id)->with('success', 'Math Sprint saved!');
+        return redirect()->route('games.play', $game)->with('success', 'Math Sprint saved!');
     }
 
     private function mathSprintCacheKey(string $nonce): string
