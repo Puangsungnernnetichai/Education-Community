@@ -3,6 +3,20 @@
 @section('content')
 @php
     $mathSprint = $games->firstWhere('type', 'math_sprint');
+    $initials = function (?string $name): string {
+        $name = trim((string) $name);
+        if ($name === '') return 'G';
+        $parts = preg_split('/\s+/', $name) ?: [];
+        $letters = '';
+        foreach ($parts as $p) {
+            if ($p === '') continue;
+            $first = function_exists('mb_substr') ? mb_substr($p, 0, 1) : substr($p, 0, 1);
+            $letters .= function_exists('mb_strtoupper') ? mb_strtoupper($first) : strtoupper($first);
+            $len = function_exists('mb_strlen') ? mb_strlen($letters) : strlen($letters);
+            if ($len >= 2) break;
+        }
+        return $letters !== '' ? $letters : 'G';
+    };
     $difficulty = function ($type) {
         return match ($type) {
             'math_sprint' => ['label' => 'Medium', 'classes' => 'bg-indigo-600 text-white'],
@@ -118,9 +132,21 @@
             <div class="group overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-900/5 transition hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-900/40 dark:ring-white/10">
                 <div class="p-6">
                     <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <div class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">Featured</div>
-                            <div class="mt-1 text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">{{ $mathSprint->name }}</div>
+                        <div class="flex items-start gap-3">
+                            <div class="h-11 w-11 overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-900/10 dark:bg-slate-950/60 dark:ring-white/10">
+                                @if (!empty($mathSprint->logo_path))
+                                    <img src="{{ asset($mathSprint->logo_path) }}" alt="{{ $mathSprint->name }} logo" class="h-full w-full object-cover" loading="lazy" />
+                                @else
+                                    <div class="flex h-full w-full items-center justify-center text-sm font-black text-slate-700 dark:text-slate-100">
+                                        {{ $initials($mathSprint->name) }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div>
+                                <div class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">Featured</div>
+                                <div class="mt-1 text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">{{ $mathSprint->name }}</div>
+                            </div>
                         </div>
                         <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badge['classes'] }}">{{ $badge['label'] }}</span>
                     </div>
@@ -189,7 +215,18 @@
                 <div class="group overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-900/5 transition hover:-translate-y-0.5 hover:shadow-md dark:bg-slate-900/40 dark:ring-white/10">
                     <div class="p-6">
                         <div class="flex items-start justify-between gap-3">
-                            <div class="text-lg font-black tracking-tight text-slate-900 dark:text-slate-100">{{ $game->name }}</div>
+                            <div class="flex items-start gap-3">
+                                <div class="h-10 w-10 overflow-hidden rounded-2xl bg-slate-50 ring-1 ring-slate-900/10 dark:bg-slate-950/60 dark:ring-white/10">
+                                    @if (!empty($game->logo_path))
+                                        <img src="{{ asset($game->logo_path) }}" alt="{{ $game->name }} logo" class="h-full w-full object-cover" loading="lazy" />
+                                    @else
+                                        <div class="flex h-full w-full items-center justify-center text-xs font-black text-slate-700 dark:text-slate-100">
+                                            {{ $initials($game->name) }}
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="text-lg font-black tracking-tight text-slate-900 dark:text-slate-100">{{ $game->name }}</div>
+                            </div>
                             <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badge['classes'] }}">{{ $badge['label'] }}</span>
                         </div>
                         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ $description($game->type) }}</p>

@@ -14,6 +14,7 @@ class Game extends Model
     protected $fillable = [
         'name',
         'slug',
+        'logo_path',
         'type',
         'is_active',
     ];

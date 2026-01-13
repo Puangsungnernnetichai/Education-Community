@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Logic Rush">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="52" height="52" rx="16" fill="url(#g)"/>
+  <path d="M34 14c-9 0-16 7-16 16 0 5 2 9 6 12v7c0 1 1 2 2 2h12c1 0 2-1 2-2v-6c4-3 6-8 6-13 0-9-7-16-16-16z" fill="rgba(255,255,255,0.16)"/>
+  <path d="M29 22h6" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M26 30h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M28 38h8" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M40 18l6 4" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+</svg>
