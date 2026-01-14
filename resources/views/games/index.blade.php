@@ -148,7 +148,7 @@
                                 <div class="mt-1 text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">{{ $mathSprint->name }}</div>
                             </div>
                         </div>
-                        <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badge['classes'] }}">{{ $badge['label'] }}</span>
+                        <span class="inline-flex items-center rounded-full px-4 py-1 text-xs font-semibold {{ $badge['classes'] }}">{{ $badge['label'] }}</span>
                     </div>
 
                     <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">{{ $description($mathSprint->type) }}</p>
@@ -169,7 +169,7 @@
                         <div class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">Coming soon</div>
                         <div class="mt-1 text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">Daily Review</div>
                     </div>
-                    <span class="inline-flex items-center rounded-full bg-slate-700 px-2.5 py-1 text-xs font-semibold text-white">Easy</span>
+                    <span class="inline-flex items-center rounded-full bg-slate-700 px-4 py-1 text-xs font-semibold text-white">Easy</span>
                 </div>
                 <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">A quick, guided session that adapts to what you practiced.</p>
                 <div class="mt-5">
@@ -187,7 +187,7 @@
                         <div class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">Coming soon</div>
                         <div class="mt-1 text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">Memory Match</div>
                     </div>
-                    <span class="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white">Medium</span>
+                    <span class="inline-flex items-center rounded-full bg-indigo-600 px-4 py-1 text-xs font-semibold text-white">Medium</span>
                 </div>
                 <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">Build recall with short, playful matching rounds.</p>
                 <div class="mt-5">
@@ -227,7 +227,7 @@
                                 </div>
                                 <div class="text-lg font-black tracking-tight text-slate-900 dark:text-slate-100">{{ $game->name }}</div>
                             </div>
-                            <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badge['classes'] }}">{{ $badge['label'] }}</span>
+                            <span class="inline-flex items-center rounded-full px-4 py-1 text-xs font-semibold {{ $badge['classes'] }}">{{ $badge['label'] }}</span>
                         </div>
                         <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ $description($game->type) }}</p>
                         <div class="mt-5">
