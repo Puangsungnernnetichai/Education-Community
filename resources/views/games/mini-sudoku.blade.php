@@ -307,6 +307,7 @@
 
                 get endReasonText() {
                     if (this.endReason === 'solve') return 'ทำสำเร็จ!';
+                    if (this.endReason === 'wrong') return 'ใส่ผิด! เกมจบ';
                     if (this.endReason === 'timeout') return 'หมดเวลา';
                     if (this.endReason === 'giveup') return 'ยอมแพ้';
                     return 'จบเกม';
@@ -392,12 +393,22 @@
                 },
 
                 setNumber(n) {
+                    if (this.state !== 'playing') return;
                     if (!this.canEditSelected) return;
                     if (!inRange(n)) return;
 
                     const { r, c } = this.selected;
                     this.grid[r][c] = n;
                     this.hint = '';
+
+                    // Instant-fail on wrong entry to make the game feel decisive.
+                    // (Previously we only highlighted conflicts, which felt like the game didn't end.)
+                    if (this.solution?.[r]?.[c] !== n) {
+                        this.earnedPoints = 0;
+                        this.hint = 'ผิด! ลองเริ่มใหม่อีกครั้ง';
+                        this.gameOver('wrong');
+                        return;
+                    }
 
                     if (this.isCompleteAndValid()) {
                         const bonus = Math.max(0, Math.floor(this.timeLeftMs / 5000));
@@ -499,9 +510,11 @@
                     this.saveStatus = 'กำลังบันทึก...';
                     this.saveError = '';
 
+                    const finishUrl = "{{ route('games.mini_sudoku.finish') }}";
+
                     try {
                         const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                        const res = await fetch('{{ url('/games/mini-sudoku/finish') }}', {
+                        const res = await fetch(finishUrl, {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
