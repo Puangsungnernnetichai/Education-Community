@@ -42,4 +42,9 @@ return [
         ],
     ],
 
+    'monitoring' => [
+        // Only logs requests that are slow or failed (>= 500)
+        'request_log_threshold_ms' => env('REQUEST_LOG_THRESHOLD_MS', 1500),
+    ],
+
 ];

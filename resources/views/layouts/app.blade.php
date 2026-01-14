@@ -149,6 +149,29 @@
                 </script>
             @endif
 
+            <div id="ban-modal" class="fixed inset-0 hidden" style="z-index:2147483647" role="dialog" aria-modal="true" aria-hidden="true">
+                <div class="absolute inset-0 z-0 bg-slate-900/50"></div>
+                <div class="relative z-10 flex min-h-full items-center justify-center p-4">
+                    <div class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-rose-300/60 dark:bg-slate-900 dark:ring-rose-500/20">
+                        <div class="p-6">
+                            <div class="flex items-start gap-3">
+                                <div class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-rose-600"></div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-sm font-semibold text-slate-900 dark:text-slate-100">บัญชีนี้ถูกแบนจากผู้ดูแลระบบ</div>
+                                    <div id="ban-modal-message" class="mt-2 max-h-[50vh] overflow-y-auto whitespace-pre-line pr-1 text-sm text-slate-700 dark:text-slate-200"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 bg-white/60 p-4 dark:border-white/10 dark:bg-slate-900/60">
+                            <div class="flex justify-end">
+                                <button id="ban-modal-ok" type="button" class="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus-visible:ring-4 focus-visible:ring-rose-200 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 dark:focus-visible:ring-rose-900/40">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         @if (isset($header))
             <header class="bg-white dark:bg-slate-950">
                 <div class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
@@ -195,6 +218,89 @@
                 }
             })();
         </script>
+
+        @auth
+            <script>
+                (function () {
+                    var fired = false;
+                    var timer = null;
+                    var intervalMs = 15000;
+
+                    function showBanPopup(message) {
+                        var root = document.getElementById('ban-modal');
+                        var body = document.getElementById('ban-modal-message');
+                        var ok = document.getElementById('ban-modal-ok');
+                        if (!root || !body || !ok) {
+                            // Fallback to native alert if markup is missing.
+                            window.alert(message || 'บัญชีนี้ถูกแบนจากผู้ดูแลระบบ');
+                            window.location.href = @json(route('home'));
+                            return;
+                        }
+
+                        body.textContent = message || '';
+                        root.classList.remove('hidden');
+
+                        try {
+                            ok.scrollIntoView({ block: 'nearest' });
+                            ok.focus({ preventScroll: true });
+                        } catch (e) {}
+
+                        ok.addEventListener('click', function () {
+                            window.location.href = @json(route('home'));
+                        }, { once: true });
+                    }
+
+                    function formatBanMessage(data) {
+                        var lines = [];
+                        if (data && data.reason) {
+                            lines.push('เหตุผล: ' + data.reason);
+                        }
+                        if (data && data.banned_until_human) {
+                            lines.push('ระยะเวลา: เหลือประมาณ ' + data.banned_until_human);
+                        } else {
+                            lines.push('ระยะเวลา: ถาวร');
+                        }
+                        return lines.join('\n');
+                    }
+
+                    async function check() {
+                        if (fired) return;
+                        if (document.visibilityState && document.visibilityState !== 'visible') return;
+
+                        try {
+                            var res = await fetch(@json(route('session.ban_check')), {
+                                method: 'GET',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                },
+                                credentials: 'same-origin'
+                            });
+
+                            if (res.status !== 403) return;
+                            var json = await res.json().catch(function () { return null; });
+                            if (!json || json.error !== 'banned') return;
+
+                            fired = true;
+                            if (timer) window.clearInterval(timer);
+
+                            var message = 'บัญชีนี้ถูกแบนจากผู้ดูแลระบบ';
+                            if (json.data) {
+                                var extra = formatBanMessage(json.data);
+                                if (extra) message += '\n\n' + extra;
+                            }
+
+                            showBanPopup(message);
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+
+                    timer = window.setInterval(check, intervalMs);
+                    window.setTimeout(check, 2000);
+                })();
+            </script>
+        @endauth
 
         <div id="post-edit-modal" class="fixed inset-0 z-[130] hidden" aria-hidden="true">
             <div class="absolute inset-0 bg-slate-900/40"></div>

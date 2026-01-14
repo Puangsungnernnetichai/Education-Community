@@ -9,6 +9,10 @@ class PostPolicy
 {
     public function view(?User $user, Post $post): bool
     {
+        if ($post->is_hidden) {
+            return (bool) ($user?->isAdmin());
+        }
+
         if (! $post->is_private) {
             return true;
         }

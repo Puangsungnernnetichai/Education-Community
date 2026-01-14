@@ -18,10 +18,16 @@ class Post extends Model
         'title',
         'body',
         'is_private',
+        'is_hidden',
+        'hidden_at',
+        'hidden_by',
+        'hidden_reason',
     ];
 
     protected $casts = [
         'is_private' => 'bool',
+        'is_hidden' => 'bool',
+        'hidden_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -31,12 +37,17 @@ class Post extends Model
 
     public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class)->whereNull('parent_id')->latest();
+        return $this->hasMany(Comment::class)
+            ->whereNull('parent_id')
+            ->where('is_hidden', false)
+            ->latest();
     }
 
     public function allComments(): HasMany
     {
-        return $this->hasMany(Comment::class)->latest();
+        return $this->hasMany(Comment::class)
+            ->where('is_hidden', false)
+            ->latest();
     }
 
     public function tags(): BelongsToMany
@@ -54,11 +65,12 @@ class Post extends Model
     {
         return $query->when(! $user || ! $user->isAdmin(), function ($q) use ($user) {
             $q->where(function ($sub) use ($user) {
+                $sub->where('is_hidden', false);
                 $sub->where('is_private', false);
 
                 if ($user) {
                     $sub->orWhere(function ($own) use ($user) {
-                        $own->where('is_private', true)->where('user_id', $user->id);
+                        $own->where('is_hidden', false)->where('is_private', true)->where('user_id', $user->id);
                     });
                 }
             });

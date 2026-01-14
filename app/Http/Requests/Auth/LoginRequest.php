@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,35 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+        if ($user instanceof User && $user->banned_at) {
+            // Auto-expire timed bans.
+            if ($user->banned_until && $user->banned_until->isPast()) {
+                $user->update([
+                    'banned_at' => null,
+                    'banned_until' => null,
+                    'ban_reason' => null,
+                ]);
+
+                RateLimiter::clear($this->throttleKey());
+                return;
+            }
+
+            $message = 'บัญชีนี้ถูกระงับการใช้งาน';
+            if (is_string($user->ban_reason) && trim($user->ban_reason) !== '') {
+                $message .= ': ' . trim($user->ban_reason);
+            }
+            if ($user->banned_until) {
+                $message .= ' (หมดอายุ ' . $user->banned_until->diffForHumans() . ')';
+            }
+
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => $message,
             ]);
         }
 

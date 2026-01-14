@@ -25,6 +25,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'points',
+        'banned_at',
+        'banned_until',
+        'ban_reason',
     ];
 
     /**
@@ -45,6 +49,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'points' => 'integer',
+        'banned_at' => 'datetime',
+        'banned_until' => 'datetime',
     ];
 
     public function isAdmin(): bool

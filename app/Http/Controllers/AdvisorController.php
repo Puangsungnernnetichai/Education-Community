@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\AiRequest;
 use App\Services\Ai\AiAdvisorClient;
 
 class AdvisorController extends Controller
@@ -52,15 +53,51 @@ class AdvisorController extends Controller
         $messages[] = $userMsg;
 
         $provider = config('services.ai_advisor.provider', 'mock');
+        $payload = array_map(function ($m) {
+            return [
+                'role' => (string) ($m['role'] ?? 'user'),
+                'text' => (string) ($m['text'] ?? ''),
+            ];
+        }, $messages);
+
+        $startMs = (int) round(microtime(true) * 1000);
+
         if ($provider === 'openai') {
-            $aiText = app(AiAdvisorClient::class)->reply(array_map(function ($m) {
-                return [
-                    'role' => (string) ($m['role'] ?? 'user'),
-                    'text' => (string) ($m['text'] ?? ''),
-                ];
-            }, $messages));
+            $result = app(AiAdvisorClient::class)->replyDetailed($payload);
+            $aiText = (string) ($result['text'] ?? '');
+
+            AiRequest::create([
+                'user_id' => $request->user()?->id,
+                'feature' => 'advisor',
+                'provider' => $result['provider'] ?? 'openai',
+                'model' => $result['model'] ?? null,
+                'prompt_version_id' => $result['prompt_version_id'] ?? null,
+                'status' => $result['status'] ?? 'ok',
+                'http_status' => $result['http_status'] ?? null,
+                'error_code' => $result['error_code'] ?? null,
+                'error_message' => $result['error_message'] ?? null,
+                'latency_ms' => $result['latency_ms'] ?? null,
+                'input_chars' => mb_strlen($userText),
+                'output_chars' => mb_strlen($aiText),
+            ]);
         } else {
             $aiText = $this->mockAdvisorReply($userText);
+            $latencyMs = max(0, (int) round(microtime(true) * 1000) - $startMs);
+
+            AiRequest::create([
+                'user_id' => $request->user()?->id,
+                'feature' => 'advisor',
+                'provider' => $provider,
+                'model' => null,
+                'prompt_version_id' => null,
+                'status' => 'ok',
+                'http_status' => null,
+                'error_code' => null,
+                'error_message' => null,
+                'latency_ms' => $latencyMs,
+                'input_chars' => mb_strlen($userText),
+                'output_chars' => mb_strlen($aiText),
+            ]);
         }
         $aiMsg = [
             'id' => (string) Str::uuid(),

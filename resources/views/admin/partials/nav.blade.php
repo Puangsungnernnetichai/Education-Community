@@ -1,0 +1,7 @@
+<div class="flex flex-wrap items-center gap-2">
+    <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center rounded-2xl px-3 py-2 text-sm font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 ring-1 ring-slate-900/10 hover:bg-slate-50' }}">Dashboard</a>
+    <a href="{{ route('admin.users.index') }}" class="inline-flex items-center rounded-2xl px-3 py-2 text-sm font-semibold transition {{ request()->routeIs('admin.users.*') ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 ring-1 ring-slate-900/10 hover:bg-slate-50' }}">Users</a>
+    <a href="{{ route('admin.prompts.index') }}" class="inline-flex items-center rounded-2xl px-3 py-2 text-sm font-semibold transition {{ request()->routeIs('admin.prompts.*') ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 ring-1 ring-slate-900/10 hover:bg-slate-50' }}">Prompts</a>
+    <a href="{{ route('admin.moderation.posts') }}" class="inline-flex items-center rounded-2xl px-3 py-2 text-sm font-semibold transition {{ request()->routeIs('admin.moderation.*') ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 ring-1 ring-slate-900/10 hover:bg-slate-50' }}">Moderation</a>
+    <a href="{{ route('admin.performance.index') }}" class="inline-flex items-center rounded-2xl px-3 py-2 text-sm font-semibold transition {{ request()->routeIs('admin.performance.*') ? 'bg-slate-900 text-white' : 'bg-white text-slate-900 ring-1 ring-slate-900/10 hover:bg-slate-50' }}">Performance</a>
+</div>

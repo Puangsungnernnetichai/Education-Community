@@ -14,6 +14,9 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\WordLadderController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\PromptController as AdminPromptController;
+use App\Http\Controllers\Admin\ModerationController as AdminModerationController;
+use App\Http\Controllers\Admin\PerformanceController as AdminPerformanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +34,17 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
 
+Route::get('/banned', function () {
+    return view('banned', [
+        'data' => session('banned', []),
+    ]);
+})->name('banned.notice');
+
 Route::middleware('auth')->group(function () {
+    Route::get('/__ban-check', function () {
+        return response()->json(['ok' => true]);
+    })->name('session.ban_check');
+
     Route::get('/advisor', [AdvisorController::class, 'index'])->name('advisor.index');
     Route::post('/advisor/message', [AdvisorController::class, 'message'])->name('advisor.message');
 });
@@ -53,7 +66,27 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
     Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::post('/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('admin.users.role');
+    Route::post('/users/{user}/ban', [AdminUserController::class, 'ban'])->name('admin.users.ban');
+    Route::post('/users/{user}/unban', [AdminUserController::class, 'unban'])->name('admin.users.unban');
+    Route::post('/users/{user}/points', [AdminUserController::class, 'adjustPoints'])->name('admin.users.points');
+
+    Route::get('/prompts', [AdminPromptController::class, 'index'])->name('admin.prompts.index');
+    Route::get('/prompts/{prompt}', [AdminPromptController::class, 'show'])->name('admin.prompts.show');
+    Route::post('/prompts/{prompt}/versions', [AdminPromptController::class, 'storeVersion'])->name('admin.prompts.versions.store');
+    Route::post('/prompts/{prompt}/activate/{version}', [AdminPromptController::class, 'activate'])->name('admin.prompts.activate');
+
+    Route::get('/moderation/posts', [AdminModerationController::class, 'posts'])->name('admin.moderation.posts');
+    Route::post('/moderation/posts/{post}/hide', [AdminModerationController::class, 'hidePost'])->name('admin.moderation.posts.hide');
+    Route::post('/moderation/posts/{post}/unhide', [AdminModerationController::class, 'unhidePost'])->name('admin.moderation.posts.unhide');
+
+    Route::get('/moderation/comments', [AdminModerationController::class, 'comments'])->name('admin.moderation.comments');
+    Route::post('/moderation/comments/{comment}/hide', [AdminModerationController::class, 'hideComment'])->name('admin.moderation.comments.hide');
+    Route::post('/moderation/comments/{comment}/unhide', [AdminModerationController::class, 'unhideComment'])->name('admin.moderation.comments.unhide');
+
+    Route::get('/performance', [AdminPerformanceController::class, 'index'])->name('admin.performance.index');
 });
 
 Route::get('/dashboard', function () {
